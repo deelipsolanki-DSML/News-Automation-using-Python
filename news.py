@@ -3,7 +3,6 @@ import os
 import sys
 import pandas as pd
 from datetime import datetime
-# Import SeleniumBase instead of regular Selenium components
 from seleniumbase import Driver
 
 app_path = os.path.dirname(sys.executable)
@@ -13,7 +12,6 @@ dmy = now.strftime("%d-%m-%Y")
 site = 'https://www.thesun.co.uk/sport/football/'
 
 # 1. Initialize Advanced Undetected Driver in Headless Mode
-# This completely replaces the manual chromedriver path and custom user-agent setup
 driver = Driver(uc=True, headless=True)
 
 try:
@@ -31,7 +29,7 @@ try:
     subtitles = []
     links = []
 
-    # 4. Extract text nodes safely via textContent attributes
+    # 4. Extract text (title, subtitle, link)
     for c in containers:
         try:
             title = c.find_element(by='xpath', value="./a/p").get_attribute("textContent").strip()
@@ -45,7 +43,7 @@ try:
             # Continues processing if a single card structure is malformed
             continue
 
-    # 5. Populate and build output dataframe exports
+    # 5. build dataframe and fill it
     df = pd.DataFrame(columns=['titles', 'subtitles', 'links'])
     df['titles'] = titles
     df['subtitles'] = subtitles
@@ -58,5 +56,5 @@ try:
     print(f"Success! Saved {len(df)} entries to {export_path}")
 
 finally:
-    # 6. Gracefully shut down background workers
+    # 6. Shut down driver
     driver.quit()
